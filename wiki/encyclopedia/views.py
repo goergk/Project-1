@@ -16,7 +16,7 @@ def entry(request, title):
         })
     else:
         return render(request, "encyclopedia/entry.html", {
-            "title": "Page was not found",
-            "entry": "<h1>Page was not found</h1>"
+            "entry": f"<h1>Page '{ title }' was not found</h1>",
+            "title": "Page was not found"
         })
 
