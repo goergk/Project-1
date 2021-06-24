@@ -24,13 +24,14 @@ def entry(request, title):
         })
 
 def searchEntry(request):
-    value = request.GET['title']
-    if util.get_entry(value):
-        return redirect(reverse("encyclopedia:entry", kwargs={"title" : value}))
+    string = request.GET['title']
+
+    if util.get_entry(string):
+        return redirect(reverse("encyclopedia:entry", kwargs={"title" : string}))
     else:
         subStringEntries = []
         for entry in util.list_entries():
-            if value.upper() in entry.upper():
+            if string.lower() in entry.lower():
                 subStringEntries.append(entry)
         return render(request, "encyclopedia/index.html", {
             "entries": subStringEntries
