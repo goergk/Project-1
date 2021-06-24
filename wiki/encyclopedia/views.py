@@ -1,6 +1,10 @@
+from django.http.response import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render
 from . import util
 import markdown2 
+from django.urls import reverse
+from django.shortcuts import redirect
+from random import choice
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -19,3 +23,18 @@ def entry(request, title):
             "title": "Page was not found"
         })
 
+def searchEntry(request):
+    value = request.GET['title']
+    if util.get_entry(value):
+        return redirect(reverse("encyclopedia:entry", kwargs={"title" : value}))
+    else:
+        subStringEntries = []
+        for entry in util.list_entries():
+            if value.upper() in entry.upper():
+                subStringEntries.append(entry)
+        return render(request, "encyclopedia/index.html", {
+            "entries": subStringEntries
+        })
+
+def randomEntry(request):
+    return redirect(reverse("encyclopedia:entry", kwargs={"title" : choice(util.list_entries())}))
