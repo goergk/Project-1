@@ -3,12 +3,12 @@ from django.shortcuts import render
 from . import util
 import markdown2 
 from django.urls import reverse
-from django.shortcuts import redirect
 from random import choice
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
-        "entries": util.list_entries()
+        "entries": util.list_entries(),
+        "header": "All Pages"
     })
 
 def entry(request, title):
@@ -27,15 +27,25 @@ def searchEntry(request):
     string = request.GET['title']
 
     if util.get_entry(string):
-        return redirect(reverse("encyclopedia:entry", kwargs={"title" : string}))
+        return HttpResponseRedirect(reverse("encyclopedia:entry", kwargs={"title" : string}))
     else:
-        subStringEntries = []
+        substringEntries = []
         for entry in util.list_entries():
             if string.lower() in entry.lower():
-                subStringEntries.append(entry)
-        return render(request, "encyclopedia/index.html", {
-            "entries": subStringEntries
-        })
+                substringEntries.append(entry)
+        if len(substringEntries) > 0:
+            return render(request, "encyclopedia/index.html", {
+                "entries": substringEntries,
+                "header": "Are you looking for:"
+            })
+        else:
+            return render(request, "encyclopedia/index.html", {
+                "entries": substringEntries,
+                "header": "No matching results were found"
+            })
 
 def randomEntry(request):
-    return redirect(reverse("encyclopedia:entry", kwargs={"title" : choice(util.list_entries())}))
+    return HttpResponseRedirect(reverse("encyclopedia:entry", kwargs={"title" : choice(util.list_entries())}))
+
+def newEntry(request):
+    return HttpResponseRedirect(reverse("encyclopedia:entry", kwargs={"title" : choice(util.list_entries())}))
