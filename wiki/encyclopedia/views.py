@@ -4,6 +4,11 @@ from . import util
 import markdown2 
 from django.urls import reverse
 from random import choice
+from django import forms
+
+class NewEntryForm(forms.Form):
+    title = forms.CharField(label="Title")
+    content = forms.CharField(label="Content")
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -47,5 +52,7 @@ def searchEntry(request):
 def randomEntry(request):
     return HttpResponseRedirect(reverse("encyclopedia:entry", kwargs={"title" : choice(util.list_entries())}))
 
-def newEntry(request):
-    return HttpResponseRedirect(reverse("encyclopedia:entry", kwargs={"title" : choice(util.list_entries())}))
+def newPage(request):
+    return render(request, "encyclopedia/new.html", {
+        "entry": NewEntryForm()
+    })
