@@ -7,8 +7,8 @@ from random import choice
 from django import forms
 
 class NewEntryForm(forms.Form):
-    title = forms.CharField(label="Title")
-    content = forms.CharField(label="Content")
+    title = forms.CharField(widget=forms.TextInput(attrs={'style': 'width:400px; margin-left: 36px'}))
+    content = forms.CharField(widget=forms.TextInput(attrs={'style': 'height: 450px; width:400px; margin-left: 10px'}))
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -53,6 +53,16 @@ def randomEntry(request):
     return HttpResponseRedirect(reverse("encyclopedia:entry", kwargs={"title" : choice(util.list_entries())}))
 
 def newPage(request):
+    if request.method == "POST":
+        form = NewEntryForm(request.POST)
+        if form.is_valid():
+            util.save_entry(form.cleaned_data["title"], form.cleaned_data["content"])
+        elif util.get_entry(form.cleaned_data["title"]) is not None:
+            return True
+        else:
+            return render(request, "encyclopedia/new.html", {
+                "entry": form
+            })
     return render(request, "encyclopedia/new.html", {
         "entry": NewEntryForm()
     })
