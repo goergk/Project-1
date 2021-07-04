@@ -4,6 +4,11 @@
     {{ title }}
 {% endblock %}
 
-{% block body %}    
-    {{ entry|safe }}
+{% block body %}
+        <div>   
+            {{ entry|safe }}
+            <form action="{% url 'encyclopedia:editPage' title %}">
+                <input type="submit" class="btn btn-dark" value="Edit" name="title">
+            </form>   
+        </div> 
 {% endblock %}

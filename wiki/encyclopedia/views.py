@@ -28,7 +28,7 @@ def entry(request, title):
             "title": "Page was not found"
         })
 
-def searchEntry(request):
+def searchPage(request):
     string = request.GET['title']
 
     if util.get_entry(string):
@@ -49,20 +49,36 @@ def searchEntry(request):
                 "header": "No matching results were found"
             })
 
-def randomEntry(request):
+def randomPage(request):
     return HttpResponseRedirect(reverse("encyclopedia:entry", kwargs={"title" : choice(util.list_entries())}))
 
 def newPage(request):
     if request.method == "POST":
         form = NewEntryForm(request.POST)
         if form.is_valid():
-            util.save_entry(form.cleaned_data["title"], form.cleaned_data["content"])
-        elif util.get_entry(form.cleaned_data["title"]) is not None:
-            return True
+            if util.get_entry(form.cleaned_data["title"]) is not None:
+                return render(request, "encyclopedia/new.html", {
+                    "new": False,
+                    "title": form.cleaned_data["title"],
+                    "entry": form
+                })
+            else:    
+                util.save_entry(form.cleaned_data["title"], form.cleaned_data["content"])
+                return HttpResponseRedirect(reverse("encyclopedia:entry", kwargs={"title" : form.cleaned_data["title"]}))
         else:
             return render(request, "encyclopedia/new.html", {
+                "new": True,
+                "title": '',
                 "entry": form
             })
     return render(request, "encyclopedia/new.html", {
+        "new": True,
+        "title": '',
         "entry": NewEntryForm()
     })
+
+def editPage(request, title):
+    string = request.GET['title']
+    return render(request, "encyclopedia/edit.html", {
+                "title": string
+            })
