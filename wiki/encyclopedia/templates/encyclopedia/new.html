@@ -11,14 +11,22 @@
         <h1>Page '{{ title }}' already exists!</h1>
     {% endif %}
 
-    {% if new %}
-    <form action="{% url 'encyclopedia:newPage' %}" method="POST">
-        {% csrf_token %}
+    {% if new %}  
         <div>
-            {{ entry|linebreaks }}
-            <input type="submit" class="btn btn-dark" value="Create">
+            <form action="{% url 'encyclopedia:newPage' %}" method="POST">
+                {% csrf_token %}
+                <label id="title_label">{{entry.title.label_tag}}</label>
+                <br> 
+                {{entry.title}}
+                <br> 
+                <label id="content_label">{{entry.content.label_tag}}</label>
+                <br> 
+                {{entry.content}}
+                <br> 
+                <input type="submit" class="btn btn-dark" value="Create">
+            </form>
         </div>
-    </form>
+    
     {% endif %}
 
 {% endblock %}

@@ -10,4 +10,4 @@ urlpatterns = [
     path("search", views.searchPage, name="searchPage"),
     path("random", views.randomPage, name="randomPage"),
     path("new", views.newPage, name="newPage")
-]
+] 

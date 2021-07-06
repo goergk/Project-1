@@ -7,8 +7,10 @@
 {% block body %}
         <div>   
             {{ entry|safe }}
+            {% if exists %}
             <form action="{% url 'encyclopedia:editPage' title %}">
-                <input type="submit" class="btn btn-dark" value="Edit" name="title">
-            </form>   
+                <input type="submit" class="btn btn-dark" value="Edit">
+            </form>
+            {% endif %}   
         </div> 
 {% endblock %}
