@@ -1,21 +1,28 @@
 {% extends "encyclopedia/layout.html" %}
 
 {% block title %}
-    Edit {{ title }} page
+    {% if exists %}
+        Edit {{ title }} page
+    {% else %}
+        Page was not found
+    {% endif %}
 {% endblock %}
 
 {% block body %}
-    <h1>Edit '{{ title }}' page</h1>
-        <div>
-            <form action="{% url 'encyclopedia:editPage' title %}" method="POST">
-                {% csrf_token %}
-                <label id="content_label">{{entry.content.label_tag}}</label>
-                <br> 
-                {{entry.content}}
-                <br> 
-                <input type="submit" class="btn btn-dark" value="Save">
-            </form>    
-        </div>
-    </form>
-
+    {% if exists %}
+        <h1>Edit '{{ title }}' page</h1>
+            <div>
+                <form action="{% url 'encyclopedia:editPage' title %}" method="POST">
+                    {% csrf_token %}
+                    <label id="content_label">{{entry.content.label_tag}}</label>
+                    <br> 
+                    {{entry.content}}
+                    <br> 
+                    <input type="submit" class="btn btn-dark" value="Save">
+                </form>    
+            </div>
+        </form>
+    {% else %}
+        <h1>Page '{{ title }}' was not found</h1>
+    {% endif %}
 {% endblock %}

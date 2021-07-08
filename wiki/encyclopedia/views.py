@@ -83,15 +83,22 @@ def newPage(request):
     })
 
 def editPage(request, title):
-    if request.method == "POST":
-        form = EditEntryForm(request.POST)
-        if form.is_valid():
-            util.save_entry(title, form.cleaned_data["content"])
-            return HttpResponseRedirect(reverse("encyclopedia:entry", kwargs={"title" : title}))
-    return render(request, "encyclopedia/edit.html", {
-        "title": title,
-        "content": util.get_entry(title),
-        "entry": EditEntryForm(initial={'content':util.get_entry(title)})
-    })
+    if util.get_entry(title) is not None:
+        if request.method == "POST":
+            form = EditEntryForm(request.POST)
+            if form.is_valid():
+                util.save_entry(title, bytes(form.cleaned_data["content"], 'utf8'))
+                return HttpResponseRedirect(reverse("encyclopedia:entry", kwargs={"title" : title}))
+        return render(request, "encyclopedia/edit.html", {
+            "title": title,
+            "content": util.get_entry(title),
+            "entry": EditEntryForm(initial={'content':util.get_entry(title)}),
+            "exists": True
+        })
+    else:
+        return render(request, "encyclopedia/edit.html", {
+            "title": title,
+            "exists": False
+        })
 
 
